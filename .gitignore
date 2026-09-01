@@ -1,0 +1,23 @@
+# macOS
+.DS_Store
+
+# Dependencies
+node_modules/
+__pycache__/
+*.pyc
+.venv/
+venv/
+
+# Environment / secrets
+.env
+.env.*
+!.env.example
+
+# Build output
+dist/
+build/
+.next/
+
+# Editors
+.vscode/
+.idea/
