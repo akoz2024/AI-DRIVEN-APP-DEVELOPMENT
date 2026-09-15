@@ -1,0 +1,9 @@
+# Core stack for OIM 3641 coursework
+jupyterlab
+pandas
+numpy
+scikit-learn
+matplotlib
+streamlit
+requests
+python-dotenv
