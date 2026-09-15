@@ -10,11 +10,13 @@ or application code, plus any data needed to reproduce the results.
 
 ## About Me
 
-I'm a Babson College student finishing my degree in December 2026, and I work in
-operations and analytics at an education-technology company, where I build data pipelines
-and internal tools that turn messy, multi-system business data into something people can
-actually act on. Day to day that means Python, SQL, and a lot of API plumbing across
-Salesforce, QuickBooks, and Microsoft 365.
+I'm a Babson College student finishing my degree in December 2026. I work in private
+equity at Dover Capital, across a portfolio of distressed B2B SaaS companies — turnaround
+situations where the operating data is scattered across Salesforce, QuickBooks, and a
+dozen other systems, and nobody fully trusts any of it. My job is to fix that: I build the
+data pipelines and internal tools that reconcile those systems and turn them into
+something an operator can actually act on — revenue and churn reconciliation, customer
+health scoring, and AI-driven workflows that replace manual reporting.
 
 I'm taking this course to go from *scripts that answer a question* to *applications other
 people can use* — LLM-backed apps, clean interfaces, and deployment that doesn't require me
