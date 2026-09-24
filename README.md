@@ -65,7 +65,8 @@ AI-DRIVEN-APP-DEVELOPMENT/
 ├── README.md                 # This file
 ├── .gitignore                # Excludes secrets, venvs, and build output
 ├── notebooks/                # In-class activities and prework notebooks
-│   └── 02-python_concepts.ipynb
+│   ├── 02-python_concepts.ipynb
+│   └── user.py
 ├── assignments/              # Graded individual assignments
 ├── projects/                 # Team project milestones (one folder per milestone)
 ├── data/                     # Small sample datasets used by the notebooks
