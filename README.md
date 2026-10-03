@@ -68,6 +68,11 @@ AI-DRIVEN-APP-DEVELOPMENT/
 │   ├── 02-python_concepts.ipynb
 │   └── user.py
 ├── assignments/              # Graded individual assignments
+│   └── assignment-1/         # Stock Analysis Streamlit app (OOP + Streamlit)
+│       ├── assignment_1.py   #   streamlit run assignment_1.py
+│       ├── stock.py
+│       ├── demo_modified.py
+│       └── analysis.docx
 ├── projects/                 # Team project milestones (one folder per milestone)
 ├── data/                     # Small sample datasets used by the notebooks
 └── requirements.txt          # Python dependencies for the repo
