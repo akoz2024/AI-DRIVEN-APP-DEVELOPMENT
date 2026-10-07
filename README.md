@@ -67,6 +67,10 @@ AI-DRIVEN-APP-DEVELOPMENT/
 ├── notebooks/                # In-class activities and prework notebooks
 │   ├── 02-python_concepts.ipynb
 │   └── user.py
+├── activities/               # In-class activity apps
+│   └── rag-chatbot/          # Activities 10–11: RAG chatbot over the student handbook
+│       ├── app.py            #   uv run streamlit run app.py
+│       └── data/             #   Babson undergraduate student handbook (PDF)
 ├── assignments/              # Graded individual assignments
 │   └── assignment-1/         # Stock Analysis Streamlit app (OOP + Streamlit)
 │       ├── assignment_1.py   #   streamlit run assignment_1.py

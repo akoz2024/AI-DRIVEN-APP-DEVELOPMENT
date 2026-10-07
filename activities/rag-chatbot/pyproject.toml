@@ -5,6 +5,7 @@ description = "RAG chatbot that answers questions about the Babson student handb
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [
+    "httpx>=0.28.1",
     "llama-index-core>=0.14.25",
     "llama-index-embeddings-huggingface>=0.8.0",
     "llama-index-llms-google-genai>=0.11.2",

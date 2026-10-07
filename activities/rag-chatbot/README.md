@@ -55,3 +55,39 @@ follow-ups into standalone questions using the history.
 ### Screenshots
 
 _TODO_
+
+## Activity 11: Production-ready code
+
+[Changes since the Activity 10 version](https://github.com/akoz2024/AI-DRIVEN-APP-DEVELOPMENT/commits/main/activities/rag-chatbot)
+
+**Refactor:** imports grouped per PEP 8, `DATA_DIR` used everywhere (now a `pathlib.Path`
+anchored to `app.py`, so the app works no matter which folder you launch it from), and a
+docstring on every function.
+
+**Fix:** `VectorStoreIndex(documents)` → `VectorStoreIndex.from_documents(documents)`. The old
+version treated each of the handbook's 103 pages as a single unchunked node; `from_documents`
+splits them into 112 chunks before embedding.
+
+**Caching:** `get_query_engine()` is decorated with `@st.cache_resource`, and the `Settings`
+lines moved inside it, so the handbook is indexed and the embedding model loaded once, not on
+every question. The cached function takes the validated key as an argument and contains no
+`st.error`/`st.stop()`.
+
+| Check | What it protects against | Where in your code | Fail fast or fallback? |
+| --- | --- | --- | --- |
+| API key | Missing, blank, or misnamed `GEMINI_API_KEY` in `.env` | `get_api_key()`, lines 17–26 | Fail fast |
+| Data folder exists | `data/` renamed, moved, or never created | `check_data_dir()`, lines 31–36 | Fail fast |
+| Data folder has files | Empty `data/` (hidden files like `.DS_Store` are ignored) | `check_data_dir()`, lines 38–45 | Fail fast |
+| Invalid API key | Key is present but Gemini rejects it | `try`/`except genai_errors.ClientError`, lines 64–71 | Fail fast |
+| Index build fails | Corrupt or unreadable file, embedding model download fails | `except (OSError, ValueError)`, lines 72–78 | Fail fast |
+| Anything else at startup | Unexpected errors while building the engine | `except Exception`, lines 79–81 | Fail fast |
+| Rate limit | Gemini returns 429 for a question | `except genai_errors.ClientError`, lines 100–104 | Fallback |
+| Gemini outage | Gemini returns a 5xx server error | `except genai_errors.ServerError`, lines 105–106 | Fallback |
+| No internet | Wi-Fi off or dropped connection while asking | `except httpx.TransportError`, lines 107–108 | Fallback |
+| Anything else per question | Unexpected error answering one question | `except Exception`, lines 109–110 | Fallback |
+
+Fallback errors show a message and leave the chat running, so the user can just ask again.
+
+### Screenshots
+
+_TODO: missing key, renamed data folder, empty data folder, Wi-Fi off._
