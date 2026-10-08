@@ -23,18 +23,32 @@ that folder gets indexed.
 
 ## Activity 10 write-up
 
+### How these were tested
+
+No Gemini key is committed (or should be), so for the runs below I swapped Claude in as the LLM
+through a small wrapper that calls `claude -p`. The wrapper isn't part of the repo. `app.py` is
+unchanged and still uses Gemini; only the final answer-writing call differs. Retrieval, the
+handbook index, and the Streamlit UI are exactly what you'd get with a Gemini key. For the
+"general chat LLM" comparison I asked Claude the same three questions in one ordinary chat with
+no access to the handbook.
+
 ### Test queries
 
-| Question | Handbook chatbot | General chat LLM |
+| Question | Handbook chatbot (RAG) | General chat LLM (no handbook) |
 | --- | --- | --- |
-| Can I get credit for courses taken somewhere else? | _TODO_ | _TODO_ |
-| Are any interest-free loans offered? | _TODO_ | _TODO_ |
-| Follow-up: "What if I'm a transfer student?" | _TODO_ | _TODO_ |
+| Can I get credit for courses taken somewhere else? | Babson's actual policy: a cap of 12 credits (pre-Fall 2021) or 16 (Fall 2021 on), approval through an off-campus e-form on the Babson Hub, a C or better, counts as free elective credit, not in the GPA, and a final-semester grade deadline of 4:30 pm on the Tuesday before Commencement. | Generic advice: "most colleges, Babson included" accept C-or-better courses, there's "usually a cap" and a residency requirement, get pre-approval, and confirm with the registrar. No numbers or Babson-specific process. |
+| Are any interest-free loans offered? | Yes: the **Mass No Interest Loan**, 0% fixed rate with no fees, for Massachusetts residents with the greatest need, repayment starting 6 months after leaving school. It also explains why subsidized federal loans aren't truly interest-free. | Hedged: truly interest-free loans are "rare". It suggests tuition payment plans, subsidized federal loans, and "some colleges" offering emergency loans, and says to ask Financial Aid. It misses the Mass No Interest Loan entirely. |
+| Follow-up: "What if I'm a transfer student?" | Lost the thread. It retrieved unrelated pages (withdrawal and readmission, accommodations), said the excerpts "don't say anything about transfer students," and asked which situation I meant. | Followed the conversation. It tied the follow-up back to both earlier answers: how transfer credit gets evaluated and appealed, and how aid differs for transfers. |
 
 ### Observations
 
-_TODO after running the app: compare specificity (does it cite Babson's actual policy, e.g. the
-Mass No Interest Loan?) versus the general LLM's generic answers._
+- **Specificity:** RAG wins clearly on the factual questions. It quotes Babson's real limits,
+  forms, and deadlines and names a loan the general model didn't know about. The general model
+  answers from what's typical at colleges and hedges with "confirm with the registrar."
+- **Grounding:** the RAG answers cite the handbook (even page numbers) and say when the context
+  doesn't cover something, instead of guessing.
+- **Conversation:** the general chat handled the follow-up naturally; the handbook bot couldn't,
+  because it never saw the earlier questions (see below).
 
 ### Does the chatbot have memory?
 
@@ -54,7 +68,9 @@ follow-ups into standalone questions using the history.
 
 ### Screenshots
 
-_TODO_
+| Credit for outside courses | Interest-free loans | Transfer-student follow-up |
+| --- | --- | --- |
+| ![](screenshots/a10-chat-1.png) | ![](screenshots/a10-chat-2.png) | ![](screenshots/a10-chat-3.png) |
 
 ## Activity 11: Production-ready code
 
@@ -88,6 +104,30 @@ every question. The cached function takes the validated key as an argument and c
 
 Fallback errors show a message and leave the chat running, so the user can just ask again.
 
+**Stretch goals:** chat history with `st.session_state`/`st.chat_message` and an
+`st.spinner("Searching...")` around the query are both in. Persisting the index to disk is not.
+
 ### Screenshots
 
-_TODO: missing key, renamed data folder, empty data folder, Wi-Fi off._
+Each test used a freshly restarted app.
+
+**1. `GEMINI_API_KEY` missing from `.env`**
+
+![Missing API key](screenshots/a11-break-1-missing-key.png)
+
+**2. Data folder renamed** (`data/` → `data_renamed/`)
+
+![Renamed data folder](screenshots/a11-break-2-renamed-folder.png)
+
+**3. Data folder emptied** (only a hidden `.DS_Store` left, which the check ignores)
+
+![Empty data folder](screenshots/a11-break-3-empty-folder.png)
+
+**4. No internet while asking a question.** The wrapper raised the same `httpx.ConnectError` the
+Gemini client throws when Wi-Fi is off. The app shows the message and stays usable.
+
+![Offline question](screenshots/a11-break-4-offline-1.png)
+
+**Working normally** after the revisions:
+
+![Working app](screenshots/a11-working-1.png)

@@ -1,13 +1,13 @@
 import os
 from pathlib import Path
 
-import httpx
-import streamlit as st
 from dotenv import load_dotenv
 from google.genai import errors as genai_errors
+import httpx
 from llama_index.core import Settings, SimpleDirectoryReader, VectorStoreIndex
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
 from llama_index.llms.google_genai import GoogleGenAI
+import streamlit as st
 
 load_dotenv()
 
