@@ -68,9 +68,12 @@ AI-DRIVEN-APP-DEVELOPMENT/
 │   ├── 02-python_concepts.ipynb
 │   └── user.py
 ├── activities/               # In-class activity apps
-│   └── rag-chatbot/          # Activities 10–11: RAG chatbot over the student handbook
+│   ├── rag-chatbot/          # Activities 10–11: RAG chatbot over the student handbook
+│   │   ├── app.py            #   uv run streamlit run app.py
+│   │   └── data/             #   Babson undergraduate student handbook (PDF)
+│   └── commission-app/       # Activity 15: vibe-coded vs. spec-built commission calculator
 │       ├── app.py            #   uv run streamlit run app.py
-│       └── data/             #   Babson undergraduate student handbook (PDF)
+│       └── spec.md           #   The spec prompt used for the rebuild
 ├── assignments/              # Graded individual assignments
 │   └── assignment-1/         # Stock Analysis Streamlit app (OOP + Streamlit)
 │       ├── assignment_1.py   #   streamlit run assignment_1.py
