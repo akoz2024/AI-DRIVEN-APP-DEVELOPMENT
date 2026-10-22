@@ -62,12 +62,12 @@ filter, summarize?); how to handle missing or bad values; and what the output sh
 
 ## Part 2: One-shot build
 
-We created the project with `uv init commission-app` and `uv add streamlit`, then gave the AI
+I created the project with `uv init commission-app` and `uv add streamlit`, then gave the AI
 exactly this and nothing more:
 
 > Build a Streamlit sales commission calculator in Python: 10% on sales up to $50,000, 15% above.
 
-It returned a 68-line app. We saved it as `app.py`, ran it with `uv run streamlit run app.py`
+It returned a 68-line app. I saved it as `app.py`, ran it with `uv run streamlit run app.py`
 (it worked the first time) and committed it as "One-shot version."
 
 Worth noting: the AI said up front that it chose the **tiered** reading (15% only on dollars
@@ -80,7 +80,7 @@ pick one.
 
 ### Predictions (done by hand, before using the app)
 
-Two readings of "10% up to $50,000, 15% above" are both defensible, so we predicted both:
+Two readings of "10% up to $50,000, 15% above" are both defensible, so I predicted both:
 
 - **Tiered (marginal):** 10% on the first $50,000, 15% only on the part above. Works like tax
   brackets.
@@ -95,12 +95,12 @@ Two readings of "10% up to $50,000, 15% above" are both defensible, so we predic
 | $0 | $0.00 | $0.00 | $0.00 | ✅ |
 | –$5,000 | Not allowed (error) | Not allowed (error) | Field turns red, the result stays at the old value ($0.00) | ⚠️ partial |
 
-**Where the predictions split, and why:**
+**Where the two readings split, and why:**
 
 - **$50,001 and $80,000:** tiered gives $5,000.15 / $9,500. Flat gives $7,500.15 / $12,000.
   "15% above" can mean "15% on the amount above $50k" or "15% once you're above $50k."
 - **–$5,000:** pure math gives –$500 (a clawback), but a negative *period* of sales isn't a
-  real thing. Returns should reduce net sales, not be entered on their own. We predicted "the app
+  real thing. Returns should reduce net sales, not be entered on their own. I predicted "the app
   should refuse it with a message."
 - **$50,000 exactly:** "up to $50,000" includes $50,000, so 10%. Under the tiered reading it
   doesn't matter, but under the flat reading $50,000 vs. $50,001 is a $2,500 swing.
@@ -117,8 +117,8 @@ doesn't hover could think –$5,000 earns $0.
 | --- | --- |
 | ![](screenshots/oneshot-80000.jpg) | ![](screenshots/oneshot-negative.jpg) |
 
-**Where does the app disagree with us? Is the app wrong, or is the spec unclear?**
-The app matches our tiered predictions, so it's only "wrong" if the business meant the flat
+**Where does the app disagree with you? Is the app wrong, or is the spec unclear?**
+The app matches my tiered predictions, so it's only "wrong" if the business meant the flat
 model. That's the spec's fault, not the app's: one sentence supports two very different pay
 plans. The negative case is a real app weakness. It rejects the value without a visible
 message and leaves the old result on screen.
@@ -144,36 +144,36 @@ message and leaves the old result on screen.
 
 ## Part 4: Interrogate the code
 
-| # | Question | AI's answer (short) | What we learned |
+| # | Question | AI's answer (short) | What I learned |
 | --- | --- | --- | --- |
-| 1 | What did you assume that I didn't tell you? | Tiered rather than flat; $50,000 counts as "up to"; sales are one person's per-period total; no negative sales (returns can't be entered); USD with no explicit rounding rule; added extras we didn't ask for (effective rate, breakdown table, $1,000 step); rates hard-coded; no caps or bonuses. | The one sentence left a lot out. The tiered/flat choice is the big one, but "what period?" and "gross or net sales?" also change the pay. The AI quietly filled each gap. |
+| 1 | What did you assume that I didn't tell you? | Tiered rather than flat; $50,000 counts as "up to"; sales are one person's per-period total; no negative sales (returns can't be entered); USD with no explicit rounding rule; added extras I didn't ask for (effective rate, breakdown table, $1,000 step); rates hard-coded; no caps or bonuses. | The one sentence left a lot out. The tiered/flat choice is the big one, but "what period?" and "gross or net sales?" also change the pay. The AI quietly filled each gap. |
 | 2 | Explain it part by part. | Constants at the top; `calculate_commission` splits sales into two buckets with `min(sales, 50000)` and `max(sales − 50000, 0)`; returns a dict so the UI can show a breakdown; `number_input` with `min_value=0`; Streamlit reruns the whole script on every input change; metrics and a table display the result. | The `min`/`max` trick *is* the tiered rule, with no `if` statement. Also, Streamlit has no "Calculate" button logic: the whole file reruns top to bottom whenever you change the number. |
 | 3 | What happens with empty, wrong or huge input? | Blank: reverts to the last value, so you can't tell "not entered" from $0. Letters: blocked by the widget. Negative: blocked by the widget, but the *function* itself would happily return –$100 for –$1,000. $10 billion: computes $1,499,997,500 correctly; no typo guard; floats are fine at that size. | The protection lives in the widget, not the math. Anyone who reuses `calculate_commission` (in a payroll script or a test) gets negative commissions. The blank case also makes "missing" look like "$0." |
-| 4 | What did you leave out? | It never ran the code. Predicted an extra index column in the table. Rounded rows might not add to the rounded total. A *pair* of `$` signs in Streamlit Markdown renders as LaTeX math. A $0 effective rate is meaningless. No rounding policy (Python's `f"{2.675:.2f}"` gives `2.67`). NaN/infinity/string inputs to the function. No threshold reset period, gross vs. net, or taxes. No tests or requirements file. | One claim was **wrong**: our screenshot shows no index column. The AI said it hadn't run the code, and it was right to warn us. Its other points held up: we checked `f"{2.675:.2f}"` in Python and got `2.67`. |
+| 4 | What did you leave out? | It never ran the code. Predicted an extra index column in the table. Rounded rows might not add to the rounded total. A *pair* of `$` signs in Streamlit Markdown renders as LaTeX math. A $0 effective rate is meaningless. No rounding policy (Python's `f"{2.675:.2f}"` gives `2.67`). NaN/infinity/string inputs to the function. No threshold reset period, gross vs. net, or taxes. No tests or requirements file. | One claim was **wrong**: my screenshot shows no index column. The AI said it hadn't run the code, and it was right to warn me. Its other points held up: I checked `f"{2.675:.2f}"` in Python and got `2.67`. |
 | 5 | Is there a simpler way? | Yes, about 8 lines: one `number_input`, one line of math, one `st.metric`. Or a plain `if/else` (`5_000 + (sales − 50_000) × 0.15` above the threshold). You lose the breakdown and testability. | Much of the 68 lines was presentation the prompt never asked for. The core logic is one line. Simpler is easier to check, but separating the math into a function is what makes it testable. |
 
-**Something we'd never have known to ask about:** the `$` sign in Streamlit text. `st.caption`,
+**Something I'd never have known to ask about:** the `$` sign in Streamlit text. `st.caption`,
 `st.title`, `st.markdown` and widget labels all treat text as Markdown, and Streamlit's Markdown
 renders anything between two dollar signs as a LaTeX math formula. So a caption like
 "10% on sales up to $50,000, 15% above $50,000" would render the middle part as italic math
 symbols with the dollar signs gone. The one-shot app got lucky: its caption has only one `$`.
 In a money app, dollar signs are everywhere, and the fix (`\$`) isn't something you'd think to
-look for. We put it in the spec, and the rebuilt app escapes every dollar sign in Markdown text.
+look for. I put it in the spec, and the rebuilt app escapes every dollar sign in Markdown text.
 
 ---
 
 ## Part 5: Rebuild from a real spec
 
-### Our decision
+### My decision
 
-We chose **tiered (marginal)** commission. It has no cliff at $50,000, so every extra dollar of
+I chose **tiered (marginal)** commission. It has no cliff at $50,000, so every extra dollar of
 sales earns either 10 or 15 cents and there's no reason to time or split deals around the
-threshold. It's also how the AI and most real plans read "X% up to, Y% above." We also decided
+threshold. It's also how the AI and most real plans read "X% up to, Y% above." I also decided
 that sales means **net sales for one person in one period**, that negatives get a clear error
 (returns reduce net sales, they aren't a negative period), and that blank must look different
 from $0.
 
-### The spec we gave the AI
+### The spec I gave the AI
 
 The full prompt is saved in [`spec.md`](spec.md). In summary:
 
@@ -189,7 +189,7 @@ The full prompt is saved in [`spec.md`](spec.md). In summary:
 
 ### Verification
 
-The rebuilt app matched every prediction on the first try. We checked all of these in the
+The rebuilt app matched every prediction on the first try. I checked all of these in the
 browser and with Streamlit's `AppTest`:
 
 | Sales | Predicted | Spec app's answer | Match? |
@@ -230,21 +230,21 @@ browser and with Streamlit's `AppTest`:
 ## Part 6: Reflect
 
 **What didn't you know to ask the first time? How did you find out?**
-We didn't know the one sentence described two different pay plans until we did the predictions
-by hand. Writing down $80,000 forced us to choose between $9,500 and $12,000, and the sentence
+I didn't know the one sentence described two different pay plans until I did the predictions
+by hand. Writing down $80,000 forced me to choose between $9,500 and $12,000, and the sentence
 doesn't say which is "right." The rest came from interrogating the AI: what period the threshold
 covers, gross vs. net sales, whether returns can be entered, what a blank box means, how to round
-cents, and the Streamlit `$`-as-LaTeX trap. None of those were on our radar. We only found them by
+cents, and the Streamlit `$`-as-LaTeX trap. None of those were on my radar. I only found them by
 asking "what did you assume?" and "what did you leave out?" and then checking the answers. One
 answer turned out to be wrong (the index column), which is its own lesson.
 
 **The one-shot app ran without errors. Why wasn't that enough?**
-"Runs without errors" means the Python is valid, not that the business rule is the one we want.
+"Runs without errors" means the Python is valid, not that the business rule is the one you want.
 The one-shot app gives a confident, nicely formatted $9,500 for $80,000. If the company meant the
 flat plan, that's a $2,500 underpayment on every such paycheck, and nothing on screen would tell
 you. It also quietly mishandled the edges: a negative entry left the old result showing, and a
 blank looked the same as $0. A program can be error-free and still wrong. Only comparing it with
-answers we worked out ourselves showed us which kind it was.
+answers I worked out myself showed me which kind it was.
 
 **When would pure vibe coding be good enough?**
 When being wrong is cheap, obvious, and easy to undo: a throwaway prototype to show an idea, a
