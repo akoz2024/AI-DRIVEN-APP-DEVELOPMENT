@@ -71,9 +71,12 @@ AI-DRIVEN-APP-DEVELOPMENT/
 │   ├── rag-chatbot/          # Activities 10–11: RAG chatbot over the student handbook
 │   │   ├── app.py            #   uv run streamlit run app.py
 │   │   └── data/             #   Babson undergraduate student handbook (PDF)
-│   └── commission-app/       # Activity 15: vibe-coded vs. spec-built commission calculator
-│       ├── app.py            #   uv run streamlit run app.py
-│       └── spec.md           #   The spec prompt used for the rebuild
+│   ├── commission-app/       # Activity 15: vibe-coded vs. spec-built commission calculator
+│   │   ├── app.py            #   uv run streamlit run app.py
+│   │   └── spec.md           #   The spec prompt used for the rebuild
+│   └── tdd/                  # Activity 16: test-driven Django to-do app (superlists)
+│       ├── functional_tests.py  # Selenium + Firefox browser test
+│       └── lists/            #   Django app with unit tests, view, and template
 ├── assignments/              # Graded individual assignments
 │   └── assignment-1/         # Stock Analysis Streamlit app (OOP + Streamlit)
 │       ├── assignment_1.py   #   streamlit run assignment_1.py
